@@ -4,7 +4,7 @@ angular.module('myapp', [])
     console.log('1111:', 1111);
 })
 
-.controller('shoppingCartCtrl', ['$scope', function($scope) {
+.controller('shoppingCartCtrl', ['$scope', '$filter', function($scope, $filter) {
     console.log('1111:', 2222);
     $scope.title = "京东商城";
     $scope.goods = [{
@@ -24,12 +24,50 @@ angular.module('myapp', [])
     $scope.cart = [];
 
     $scope.addtoCart = function(index) {
-        console.log('1111:', index);
+        console.log('addtoCart:', index);
+        var good = $scope.goods[index];
+        console.log('good:', good);
         if (!$scope.cart) $scope.cart = [];
-        $scope.cart.push({
-            good: $scope.goods[index],
-            number: 1
-        });
+        console.log('$scope.cart1:', $scope.cart);
+        var added = $filter('filter')($scope.cart, function(value, index, array) {
+            console.log('value:', value.good.name, good.name);
+            return value.good.name == good.name;
+        })[0];
+        console.log('added:', added);
+
+        if (!added) {
+            $scope.cart.push({
+                good: $scope.goods[index],
+                number: 1
+            });
+        } else {
+            console.log('added.number:', added.number);
+            added.number = parseInt(added.number) + 1;
+            $scope.cart = $filter('filter')($scope.cart, function(value) {
+                return value.good.name != good.name;
+            });
+            $scope.cart.push(added);
+        }
+        $scope.cart = $scope.cart.sort();
+        console.log('scope.cart2:', $scope.cart);
     }
+
+    $scope.delFromCart = function(index) {
+        console.log('delFromCart:', index);
+        var good = $scope.goods[index];
+        $scope.cart = $filter('filter')($scope.cart, function(value) {
+            return value.good.name != good.name;
+        });
+        console.log('scope.cart:', $scope.cart);
+    }
+
+    $scope.totalPrice = function() {
+        var totalPrice = 0;
+        for (var i = 0; i < $scope.cart.length; i++) {
+            totalPrice += $scope.cart[i].good.price * $scope.cart[i].number
+        };
+        return totalPrice;
+    };
+
 
 }]);
