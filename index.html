@@ -15,7 +15,6 @@
     <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <!-- <h3>请在web server下查看</h3> -->
             <h3>AngularJS教程 - 购物车</h3>
         </div>
     </div>
@@ -36,8 +35,8 @@
                 <div ng-repeat="c in cart | orderBy:'good.name'">
                     <div style="border: 1px solid #ccc;">
                         <img style="height:100px;width:100px;" ng-src="{{c.good.imgUrl}}" />
-                        <span>{{c.good.name}}</span>
-                        <input type="text" ng-model="c.number" />
+                        <span style="display:inline-block;width:50px;">{{c.good.name}}</span>
+                        <input style="width:60px;" type="text" ng-model="c.number" />
                         <span>￥{{c.good.price*c.number}}</span>
                         <button ng-click="delFromCart($index)">移出购物车</button>
                     </div>

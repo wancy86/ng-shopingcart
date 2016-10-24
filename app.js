@@ -4,22 +4,31 @@ angular.module('myapp', [])
     console.log('1111:', 1111);
 })
 
-.controller('shoppingCartCtrl', ['$scope', '$filter', function($scope, $filter) {
+.service('testServe', ['$rootScope', function($rootScope) {
+    console.log('xxxx: ', 3333333);
+    return {
+        getGoods: function() {
+            return [{
+                name: "apple",
+                price: 29,
+                imgUrl: "http://img13.360buyimg.com/n0/jfs/t274/83/2090217694/98857/a305ee1b/5450e819Nb4f4ada9.jpg"
+            }, {
+                name: "orange",
+                price: 72,
+                imgUrl: "https://img11.360buyimg.com/n0/jfs/t2722/130/2964403780/301720/b495be0b/577a33dfNce88ebd9.jpg"
+            }, {
+                name: "banana",
+                price: 23,
+                imgUrl: "https://img11.360buyimg.com/n0/jfs/t3082/52/1016555296/267303/5e305da1/57c403e9N15c1c8bf.jpg"
+            }];
+        }
+    }
+}])
+
+.controller('shoppingCartCtrl', ['$scope', '$filter', 'testServe', function($scope, $filter, testServe) {
     console.log('1111:', 2222);
     $scope.title = "京东商城";
-    $scope.goods = [{
-        name: "apple",
-        price: 29,
-        imgUrl: "http://img13.360buyimg.com/n0/jfs/t274/83/2090217694/98857/a305ee1b/5450e819Nb4f4ada9.jpg"
-    }, {
-        name: "orange",
-        price: 72,
-        imgUrl: "https://img11.360buyimg.com/n0/jfs/t2722/130/2964403780/301720/b495be0b/577a33dfNce88ebd9.jpg"
-    }, {
-        name: "banana",
-        price: 23,
-        imgUrl: "https://img11.360buyimg.com/n0/jfs/t3082/52/1016555296/267303/5e305da1/57c403e9N15c1c8bf.jpg"
-    }];
+    $scope.goods = testServe.getGoods();
 
     $scope.cart = [];
 
@@ -48,12 +57,13 @@ angular.module('myapp', [])
             });
             $scope.cart.push(added);
         }
-        $scope.cart = $scope.cart.sort();
+        $scope.cart = $filter('orderBy')($scope.cart, 'good.name');
         console.log('scope.cart2:', $scope.cart);
     }
 
     $scope.delFromCart = function(index) {
         console.log('delFromCart:', index);
+        console.log('xxxx: ', $scope.cart);
         var good = $scope.cart[index].good;
         $scope.cart = $filter('filter')($scope.cart, function(value) {
             return value.good.name != good.name;
